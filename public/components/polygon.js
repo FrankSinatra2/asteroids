@@ -17,10 +17,8 @@ export class PolygonComponent extends Component {
   }
    
   render(ctx) {
-      
     const position = this.parent.getPosition()
     const rotation = complexRot(this.parent.getRotation());
-
 
     ctx.strokeStyle = this.color;
 

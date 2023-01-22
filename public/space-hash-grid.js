@@ -53,9 +53,6 @@ export class SpatialHashGrid {
 
     this.insertClient(client);
 
-    console.log(`client position: ${client.position[0]}:${client.position[1]}`);
-    console.log(`client index: ${client.indices[0]}:${client.indices[1]}`);
-
     return client;
   }
 
@@ -67,8 +64,8 @@ export class SpatialHashGrid {
   removeClient(client) {
     const [i1, i2] = client.indices;
 
-    for (let x = i1[0], xn = i2[0]; x <= xn; ++x) {
-      for (let y = i1[1], yn = i2[1]; y <= yn; ++y) {
+    for (let x = i1[0]-1, xn = i2[0]+1; x <= xn; ++x) {
+      for (let y = i1[1]-1, yn = i2[1]+1; y <= yn; ++y) {
         const k = this.createKey([x, y]);
         
         if (this.cells.has(k)) {
@@ -87,6 +84,8 @@ export class SpatialHashGrid {
 
     client.indices = [i1, i2];
 
+    
+
     for (let x = i1[0], xn = i2[0]; x <= xn; ++x) {
       for (let y = i1[1], yn = i2[1]; y <= yn; ++y) {
         const k = this.createKey([x, y]);
@@ -94,42 +93,11 @@ export class SpatialHashGrid {
           this.cells.set(k, new Set());
         }
         this.cells.get(k).add(client);
+        
+        // this.ctx.fillRect(x, y, 3, 3);
       }
     }
   }
-  
-  render() {
-    if (!this.hasRendered) {
-      this.hasRendered = false;
-    }
-
-    if (this.hasRendered) {
-      return;
-    }
-    
-    const cellSize = this.getCellSize();
-
-    this.ctx.fillStyle = '#00FF00';
-    for (let x = 0; x < this.dimensions[0]; x++) {
-      for (let y = 0; y <  this.dimensions[1]; y++) {
-        this.ctx.fillRect(x * cellSize[0], y * cellSize[1], 5, 5);
-      }
-    }
-
-    // console.log([...this.cells.keys()]);
-    // for (const cell of this.cells.keys()) {
-    //   // console.log(cell);
-    //   for (const item of this.cells.get(cell).values()) {
-    //     // console.log(item);
-    //     this.ctx.fillStyle = "#00FF00";
-    //     this.ctx.fillRect(item.indices[0][0] * (this.dimensions[0]-1), item.indices[1][0] * (this.dimensions[1]-1), 5, 5);
-    //     // const p = item.data.getPosition();
-    //     // console.log(p[0], p[1]);
-    //   }
-    // }
-
-    this.hasRendered = false; //  true; 
-  } 
 
   findNearby(position, dimensions) {
     const [x, y] = position;
@@ -142,17 +110,12 @@ export class SpatialHashGrid {
     const i2 = this.getCellIndex(p2);
 
     const clients = new Set();
-    this.ctx.fillStyle = "#0000FF";
     const xMax = i2[0];
     const yMax = i2[1];
 
-    const cellSize = this.getCellSize();
- 
     for (let xi = i1[0]; xi <= xMax; xi++) {
       for (let yi = i1[1]; yi <= yMax; yi++) {
         const k = this.createKey([xi, yi]);
-
-        this.ctx.fillRect(xi * cellSize[0], yi * cellSize[1], 5, 5);
       
         if (this.cells.has(k)) {
           for (const v of this.cells.get(k)) {
@@ -162,20 +125,6 @@ export class SpatialHashGrid {
       }
     }
 
-    // for (let _x = i1[0], xn = i2[0]; _x <= xn; ++_x) {
-    //   for (let _y = i1[1], yn = i2[1]; _y <= yn; ++_y) {
-    //     const k = this.createKey([_x, _y]);
-
-    //     this.ctx.fillRect(_x * (this.dimensions[0]-1), _y * (this.dimensions[1]-1), 5, 5);
-
-
-    //     if (this.cells.has(k)) {
-    //       for (const v of this.cells.get(k)) {
-    //         clients.add(v);
-    //       }
-    //     }
-    //   }
-    // }
     return [...clients];
   }
 

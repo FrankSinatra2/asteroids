@@ -18,25 +18,26 @@ export class SpatialHashClient extends Component {
     this.parent.registerHandler('entity.move', (data) => this.onParentMove(data));
   }
 
-  render(ctx) {
-    const position = this.parent.getPosition();
+  // render(ctx) {
+  //   const position = this.parent.getPosition();
 
-    ctx.translate(position[0], position[1]);
+  //   ctx.translate(position[0], position[1]);
 
-    ctx.strokeStyle = 'purple';
-    ctx.beginPath();
-    ctx.rect(
-      -this.client.dimensions[0] / 2,
-      -this.client.dimensions[1] / 2,
-      this.client.dimensions[0],
-      this.client.dimensions[1]
-    );
-    ctx.stroke();
-    
-    ctx.translate(-position[0], -position[1]);
-  }
+  //   ctx.strokeStyle = 'purple';
+  //   ctx.beginPath();
+  //   ctx.rect(
+  //     -this.client.dimensions[0] / 2,
+  //     -this.client.dimensions[1] / 2,
+  //     this.client.dimensions[0],
+  //     this.client.dimensions[1]
+  //   );
+  //   ctx.stroke();
+  //   
+  //   ctx.translate(-position[0], -position[1]);
+  // }
 
   delete() {
+    console.log('deleted');
     this.grid.removeClient(this.client);
   }
 

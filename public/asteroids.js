@@ -5,7 +5,8 @@ import { createSpaceship } from './entities/spaceship.js';
 import { createAsteroid } from './entities/asteroid.js';
 import { createBullet } from './entities/bullet.js';
 import { randomRange } from './util/math.js';
-import { vectorScale } from './util/vector.js';
+import { AsteroidSpawner } from './components/asteroid-spawner.js';
+import { AsteroidsController } from './controllers/asteroids-controller.js';
 
 import { SpatialHashGrid } from './space-hash-grid.js';
 
@@ -34,7 +35,9 @@ window.addEventListener('load', () => {
   root.addChild(spaceship);
 
   const asteroids = new Entity('asteroids');
-  
+  asteroids.addComponent(new AsteroidSpawner(grid));
+  asteroids.addComponent(new AsteroidsController(grid));
+
   for (let i = 0; i < 2; i++) {
     const asteroid = createAsteroid('asteroid', [randomRange(-300, 300), randomRange(-300, 300)], grid);
     asteroids.addChild(asteroid);
@@ -42,23 +45,17 @@ window.addEventListener('load', () => {
 
   root.addChild(asteroids);
 
-  root.registerHandler('entity.died', (entity) => {
-    // entity.delete(); 
-  });
-  
   root.registerHandler('player.fire', () => {
     const bullet = createBullet(spaceship.position, spaceship.rotation, grid);
     root.addChild(bullet);
-    bullet.init();
+   //  bullet.init();
   });
 
   root.registerHandler('bullet.hit', (data) => {
-    // console.log(data);
-    // data.incident.broadcast('entity.died', data.incident);
-    // data.targets.forEach(target => target.broadcast('entity.died', target))
-  
     data.incident.delete();
     data.targets.forEach(t => t.delete());
+
+    console.log(data.targets);
   });
 
   let previousLoop = null;

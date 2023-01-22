@@ -3,6 +3,8 @@ import { complexFromAngle, complexRot, forwardVector, vectorNorm, vectorScale, v
 
 
 export class PlayerController extends Component {
+  static RELOAD_SPEED = 500;
+
 
   constructor() {
     super('player-controller');
@@ -37,11 +39,15 @@ export class PlayerController extends Component {
       rigidbody.velocity = vectorScale(forward, this.speed);
     }
 
-    if (input.isMouseButtonDown('right') && this.canShoot) {
-      this.broadcast('player.fire');
-      this.canShoot= false;
-    } else if (!input.isMouseButtonDown('right')) {
-      this.canShoot= true;
+    this.reloadTimer -= ts;
+    if (this.reloadTimer <= 0) {
+      if (input.isMouseButtonDown('right') && this.canShoot) {
+        this.broadcast('player.fire');
+        this.canShoot= false;
+        this.reloadTimer = PlayerController.RELOAD_SPEED;
+      } else if (!input.isMouseButtonDown('right')) {
+        this.canShoot= true;
+      }
     }
 
   }

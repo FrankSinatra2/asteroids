@@ -4,15 +4,44 @@ import { randomRange, pickRandom } from '../util/math.js';
 import { combineRot, complexFromAngle, vectorAdd, vectorScale } from '../util/vector.js';
 import { PolygonComponent } from '../components/polygon.js';
 import { RigidbodyComponent } from '../components/rigidbody.js';
+import { StatsComponent } from '../components/stats.js';
 import { SpatialHashClient } from '../components/spatial-hash-client.js';
 import { boundingCircle } from '../util/circle.js';
 
-export function createAsteroid(tag, position, grid) {
+export const LargeAsteroid = {
+  life: 3,
+  pointsDistrbution: [17, 17, 17, 13, 13, 7],
+  maxRadius: 35,
+  minRadius: 15
+};
+
+export const MediumAsteroid = {
+  life: 2,
+  pointsDistrbution: [17, 17, 17, 13, 13, 7],
+  maxRadius: 15,
+  minRadius: 8
+};
+
+export const SmallAsteroid = {
+  life: 1,
+  pointsDistrbution: [17, 17, 17, 13, 13, 7],
+  maxRadius: 8,
+  minRadius: 2
+};
+
+export const AsteroidSizes = [
+  SmallAsteroid,
+  MediumAsteroid,
+  LargeAsteroid
+];
+
+
+export function createAsteroid(tag, position, grid, size=LargeAsteroid) {
 
   const entity = new Entity(tag);
   entity.position = position;
 
-  const polygonComponent = createAsteroidPolygon(35, 15, pickRandom([17, 17, 17,  13, 13, 7]));
+  const polygonComponent = createAsteroidPolygon(size.maxRadius, size.minRadius, pickRandom(size.pointsDistrbution));
   entity.addComponent(polygonComponent);
 
   const bc = boundingCircle(polygonComponent.points);
@@ -22,6 +51,9 @@ export function createAsteroid(tag, position, grid) {
 
   const spatialHashClient = new SpatialHashClient(grid, vectorScale([1, 1], 2*bc.radius));
   entity.addComponent(spatialHashClient);
+
+  const statsComponent = new StatsComponent({life: size.life});
+  entity.addComponent(statsComponent);
 
   return entity;
 }
@@ -57,3 +89,6 @@ function createAsteroidRigidbody() {
 
   return rigidbody;
 };
+
+
+

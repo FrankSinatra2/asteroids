@@ -57,6 +57,7 @@ export class Entity {
 
   addChild(child) {
     child.parent = this;
+    child.init();
     this.children.push(child);
   }
 
@@ -116,9 +117,8 @@ export class Entity {
     const index = this.parent.children.findIndex(c => c.id === this.id);
 
     if (index >= 0) {
-      this.parent.children.splice(index, 1);
-    } else {
-      console.log(this);
+      const [ removed ] = this.parent.children.splice(index, 1);
+      this.broadcast('entity.deleted', removed);
     }
 
     for (const comp of Object.values(this.components)) {

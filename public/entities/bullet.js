@@ -11,7 +11,7 @@ const tag = () => {
 }; 
 
 export function createBullet(position, rotation, grid) {
-  const entity = new Entity(tag());
+  const entity = new Entity('bullet');
   entity.position = position;
   entity.rotation = rotation;
 
