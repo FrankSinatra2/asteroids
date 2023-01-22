@@ -60,6 +60,10 @@ export class Entity {
     this.children.push(child);
   }
 
+  removeChild(child) {
+    this.children.remove(child);
+  }
+
   setParent(parent) {
     this.parent = parent;
   }
@@ -109,6 +113,14 @@ export class Entity {
   }
 
   delete() {
+    const index = this.parent.children.findIndex(c => c.id === this.id);
+
+    if (index >= 0) {
+      this.parent.children.splice(index, 1);
+    } else {
+      console.log(this);
+    }
+
     for (const comp of Object.values(this.components)) {
       comp.delete();
     }

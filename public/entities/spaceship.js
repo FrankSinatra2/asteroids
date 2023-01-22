@@ -5,7 +5,6 @@ import { SpatialHashClient } from '../components/spatial-hash-client.js';
 import { PlayerInput } from '../components/player-input.js';
 import { vectorSub, rotateVector, rotateAround } from '../util/vector.js';
 import { RigidbodyComponent } from '../components/rigidbody.js';
-import { boundingCircle } from '../util/circle.js';
 
 export function createSpaceship(tag, position, grid) {
   const entity = new Entity(tag);
@@ -15,6 +14,13 @@ export function createSpaceship(tag, position, grid) {
   entity.addComponent(polygonComponent);
 
   const spatialHashClient = new SpatialHashClient(grid, [25, 35]);
+  // spatialHashClient.render = (ctx) => {
+  //   const i1 = spatialHashClient.client.indices[0];
+  //   const i2 = spatialHashClient.client.indices[1];
+
+  //   
+
+  // };
   entity.addComponent(spatialHashClient);
 
   const rigidbody = new RigidbodyComponent();

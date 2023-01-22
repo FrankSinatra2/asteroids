@@ -20,7 +20,7 @@ export function createAsteroid(tag, position, grid) {
   const rigidbody = createAsteroidRigidbody();
   entity.addComponent(rigidbody);
 
-  const spatialHashClient = new SpatialHashClient(grid, vectorScale([bc.radius, bc.radius], 2));
+  const spatialHashClient = new SpatialHashClient(grid, vectorScale([1, 1], 2*bc.radius));
   entity.addComponent(spatialHashClient);
 
   return entity;

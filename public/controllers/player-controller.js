@@ -36,6 +36,14 @@ export class PlayerController extends Component {
       const forward = this.parent.getForward();
       rigidbody.velocity = vectorScale(forward, this.speed);
     }
+
+    if (input.isMouseButtonDown('right') && this.canShoot) {
+      this.broadcast('player.fire');
+      this.canShoot= false;
+    } else if (!input.isMouseButtonDown('right')) {
+      this.canShoot= true;
+    }
+
   }
 
   render(ctx) {

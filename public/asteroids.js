@@ -3,6 +3,7 @@ import { Entity } from './entity.js';
 
 import { createSpaceship } from './entities/spaceship.js';
 import { createAsteroid } from './entities/asteroid.js';
+import { createBullet } from './entities/bullet.js';
 import { randomRange } from './util/math.js';
 import { vectorScale } from './util/vector.js';
 
@@ -15,12 +16,16 @@ window.addEventListener('load', () => {
 
   const ctx = canvas.getContext('2d');
 
+  // const bounds = [
+  //   vectorScale([-canvas.width, -canvas.height], 0.55),
+  //   vectorScale([canvas.width, canvas.height], 0.55)
+  // ];
   const bounds = [
-    vectorScale([-canvas.width, -canvas.height], 0.55),
-    vectorScale([canvas.width, canvas.height], 0.55)
+    [0, 0],
+    [canvas.width, canvas.height]
   ];
   const dimensions = [ 50, 50 ];
-  const grid = new SpatialHashGrid(bounds, dimensions);
+  const grid = new SpatialHashGrid(bounds, dimensions, ctx);
 
   const root = new Entity('root');
   root.position = [canvas.width / 2, canvas.height / 2];
@@ -30,12 +35,31 @@ window.addEventListener('load', () => {
 
   const asteroids = new Entity('asteroids');
   
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 2; i++) {
     const asteroid = createAsteroid('asteroid', [randomRange(-300, 300), randomRange(-300, 300)], grid);
     asteroids.addChild(asteroid);
   }
 
   root.addChild(asteroids);
+
+  root.registerHandler('entity.died', (entity) => {
+    // entity.delete(); 
+  });
+  
+  root.registerHandler('player.fire', () => {
+    const bullet = createBullet(spaceship.position, spaceship.rotation, grid);
+    root.addChild(bullet);
+    bullet.init();
+  });
+
+  root.registerHandler('bullet.hit', (data) => {
+    // console.log(data);
+    // data.incident.broadcast('entity.died', data.incident);
+    // data.targets.forEach(target => target.broadcast('entity.died', target))
+  
+    data.incident.delete();
+    data.targets.forEach(t => t.delete());
+  });
 
   let previousLoop = null;
   const loop = () => {
@@ -53,6 +77,8 @@ window.addEventListener('load', () => {
 
       root.update(elapsed);
       root.render(ctx);
+
+      // grid.render();
   
       previousLoop = timestamp;
     });
