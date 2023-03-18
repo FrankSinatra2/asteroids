@@ -51,6 +51,10 @@ window.addEventListener('load', () => {
    //  bullet.init();
   });
 
+  root.registerHandler('player.hit', () => {
+    spaceship.delete();
+  });
+
   root.registerHandler('bullet.hit', (data) => {
     data.incident.delete();
     data.targets.forEach(t => t.delete());
